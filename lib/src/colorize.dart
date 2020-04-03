@@ -1,5 +1,6 @@
+import 'dart:async' show Timer;
+
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 class ColorizeAnimatedTextKit extends StatefulWidget {
   /// List of [String] that would be displayed subsequently in the animation.
@@ -79,7 +80,7 @@ class ColorizeAnimatedTextKit extends StatefulWidget {
       : super(key: key);
 
   @override
-  _RotatingTextState createState() => new _RotatingTextState();
+  _RotatingTextState createState() => _RotatingTextState();
 }
 
 class _RotatingTextState extends State<ColorizeAnimatedTextKit>
@@ -92,7 +93,7 @@ class _RotatingTextState extends State<ColorizeAnimatedTextKit>
   Duration _speed;
   Duration _pause;
 
-  List<Map> _texts = [];
+  final List<Map> _texts = [];
 
   int _index;
 
@@ -113,7 +114,9 @@ class _RotatingTextState extends State<ColorizeAnimatedTextKit>
 
     for (int i = 0; i < widget.text.length; i++) {
       try {
-        if (!widget.text[i].containsKey('text')) throw new Error();
+        if (!widget.text[i].containsKey('text')) {
+          throw Error();
+        }
 
         _texts.add({
           'text': widget.text[i]['text'],
@@ -172,7 +175,7 @@ class _RotatingTextState extends State<ColorizeAnimatedTextKit>
   }
 
   void _nextAnimation() {
-    bool isLast = _index == widget.text.length - 1;
+    final bool isLast = _index == widget.text.length - 1;
 
     _isCurrentlyPausing = false;
 
@@ -187,18 +190,22 @@ class _RotatingTextState extends State<ColorizeAnimatedTextKit>
         _index = 0;
         _currentRepeatCount++;
       } else {
-        if (widget.onFinished != null) widget.onFinished();
+        if (widget.onFinished != null) {
+          widget.onFinished();
+        }
         return;
       }
     } else {
       _index++;
     }
 
-    if (_controller != null) _controller.dispose();
+    if (_controller != null) {
+      _controller.dispose();
+    }
 
     setState(() {});
 
-    _controller = new AnimationController(
+    _controller = AnimationController(
       duration: _texts[_index]['speed'] * _texts[_index]['text'].length,
       vsync: this,
     );
